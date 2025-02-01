@@ -1,11 +1,10 @@
-import {  pgTable, primaryKey, serial, timestamp, integer, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { relations  } from 'drizzle-orm';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
 import { usersToRaves } from './user';
-import { venues } from './venue';
-
+import { ravesToVenues } from './raveVenue';
 
 
 export const raves = pgTable('raves', {
@@ -23,30 +22,10 @@ export const ravesRelations = relations(raves, ({ many }) => ({
   raveVenues: many(ravesToVenues),
 }));
 
-export const ravesToVenues = pgTable(
-  'raves_to_venues',
-  {
-    raveId: integer('rave_id').notNull().references(() => raves.id),
-    venueId: integer('venue_id').notNull().references(() => venues.id),
-  },
-  (t) => ({
-    pk: primaryKey({ columns: [t.raveId, t.venueId] }),
-  })
-);
-
-export const ravesToVenuesRelations = relations(ravesToVenues, ({ one }) => ({
-  venue: one(venues, {
-    fields: [ravesToVenues.venueId],
-    references: [venues.id],
-  }),
-  rave: one(raves, {
-    fields: [ravesToVenues.raveId],
-    references: [raves.id],
-  }),
-}));
-
 export const insertRaveSchema = createInsertSchema(raves);
 // export const selectRaveSchema = createSelectSchema(raves);
 
 export type NewRave = z.infer<typeof insertRaveSchema>;
+
+export { ravesToVenues };
 // export type Rave = z.infer<typeof selectRaveSchema>;

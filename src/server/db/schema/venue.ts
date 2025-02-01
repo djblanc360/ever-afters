@@ -3,7 +3,7 @@ import { relations } from 'drizzle-orm';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
-import { ravesToVenues } from './rave';
+import { ravesToVenues } from './raveVenue';
 
 export const venues = pgTable('venues', {
   id: serial('id').primaryKey(),
